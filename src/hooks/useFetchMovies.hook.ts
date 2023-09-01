@@ -3,6 +3,7 @@ import { Movie } from "../interfaces/movie.interface";
 
 export const useFetchMovies = (url: string) => {
   const [results, setResults] = useState<Movie[]>([]);
+  // const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     const fetchData = async (url: string) => {

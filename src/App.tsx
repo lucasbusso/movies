@@ -1,11 +1,12 @@
+import { BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
-import MoviesList from "./components/MoviesList";
+import Layout from "./components/ Layout";
 
 function App() {
   return (
-    <>
-      <MoviesList />
-    </>
+    <Router>
+      <Layout />
+    </Router>
   );
 }
 
