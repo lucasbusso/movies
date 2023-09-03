@@ -8,42 +8,42 @@ const HEADERS = {
     "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4N2M5YjAxZjk5MjU3OTBiYzZiY2QxM2Q0ZDliMDJlZSIsInN1YiI6IjY0ZjBhMTI4NzdkMjNiMDE1MDM5MDk0MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.N7ces7uEZWKOPsUKp8sdd0yuaodlfQkHf-40U3K_STQ",
 };
 
-const fetchData = async () => {
-  try {
-    const response = await fetch(Routes.GET_MOVIES, {
-      headers: HEADERS,
-    });
-    const data = await response.json();
-    const { results } = data;
-    return results;
-  } catch (error) {
-    throw new Error("Error al cargar los datos");
-  }
-};
-
 export const useFetchMovies = () => {
   const [results, setResults] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [effect, setEffect] = useState(false);
+
+  async function fetchData(page: number) {
+    const response = await fetch(`${Routes.GET_MOVIES}?page=${page}`, {
+      headers: HEADERS,
+    });
+    const data = await response.json();
+    const { results } = data;
+    setResults(results);
+    setLoading(false);
+    return results;
+  }
+
+  function handleLoadNewPage() {
+    setCurrentPage((prevPage) => prevPage + 1);
+  }
 
   useEffect(() => {
+    setEffect(true);
+    console.log("effect 1 ");
     setLoading(true);
-    fetchData()
-      .then((newResults) => {
-        setResults((prevResults) => [...prevResults, ...newResults]);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [currentPage]);
+    fetchData(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleLoadNewPage = () => {
-    setCurrentPage((prevPage) => prevPage + 1);
-    return currentPage;
-  };
+  useEffect(() => {
+    if (!effect) return;
+    console.log("effect 2");
+    fetchData(currentPage).then((newResults) => {
+      setResults((prevResults) => [...prevResults, ...newResults]);
+    });
+  }, [currentPage]);
 
   return { results, loading, handleLoadNewPage };
 };
