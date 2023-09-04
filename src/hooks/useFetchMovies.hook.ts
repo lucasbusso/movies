@@ -43,6 +43,7 @@ export const useFetchMovies = () => {
     fetchData(currentPage).then((newResults) => {
       setResults((prevResults) => [...prevResults, ...newResults]);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   return { results, loading, handleLoadNewPage };
